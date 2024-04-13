@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:orientation="vertical"
+        android:overScrollMode="never"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/movie_music_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp"
+                android:paddingHorizontal="20dp"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/movie_sort_by_latest_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="8dp">
+
+                    <TextView
+                        android:id="@+id/movie_sort_by_latest_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:text="최신순"
+                        app:layout_constraintEnd_toStartOf="@id/movie_sort_by_latest_iv"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <ImageView
+                        android:id="@+id/movie_sort_by_latest_iv"
+                        android:src="@drawable/btn_sort_down"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/movie_sort_by_latest_tv"
+                        app:layout_constraintBottom_toBottomOf="@id/movie_sort_by_latest_tv"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/movie_music_01_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="5dp">
+
+                    <ImageView
+                        android:id="@+id/movie_music_video_01_tv"
+                        android:src="@drawable/img_video_exp2"
+                        android:layout_width="match_parent"
+                        android:layout_height="210dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/movie_music_title_01_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:text="[MV] Coin"
+                        app:layout_constraintStart_toStartOf="@id/movie_music_video_01_tv"
+                        app:layout_constraintTop_toBottomOf="@id/movie_music_video_01_tv"/>
+
+                    <TextView
+                        android:id="@+id/movie_music_singer_01_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="아이유(IU) | 2021.03.26"
+                        android:textColor="@color/gray_color"
+                        android:textSize="15sp"
+                        app:layout_constraintStart_toStartOf="@id/movie_music_title_01_tv"
+                        app:layout_constraintTop_toBottomOf="@id/movie_music_title_01_tv"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/movie_music_02_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="5dp">
+
+                    <ImageView
+                        android:id="@+id/movie_music_video_02_tv"
+                        android:src="@drawable/img_video_exp3"
+                        android:layout_width="match_parent"
+                        android:layout_height="210dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/movie_music_title_02_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:text="[MV] LILAC"
+                        app:layout_constraintStart_toStartOf="@id/movie_music_video_02_tv"
+                        app:layout_constraintTop_toBottomOf="@id/movie_music_video_02_tv"/>
+
+                    <TextView
+                        android:id="@+id/movie_music_singer_02_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="아이유(IU) | 2021.03.25"
+                        android:textColor="@color/gray_color"
+                        android:textSize="15sp"
+                        app:layout_constraintStart_toStartOf="@id/movie_music_title_02_tv"
+                        app:layout_constraintTop_toBottomOf="@id/movie_music_title_02_tv"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/movie_music_03_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="5dp">
+
+                    <ImageView
+                        android:id="@+id/movie_music_video_03_tv"
+                        android:src="@drawable/img_video_exp4"
+                        android:layout_width="match_parent"
+                        android:layout_height="210dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/movie_music_title_03_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:text="[MV] Celebrity"
+                        app:layout_constraintStart_toStartOf="@id/movie_music_video_03_tv"
+                        app:layout_constraintTop_toBottomOf="@id/movie_music_video_03_tv"/>
+
+                    <TextView
+                        android:id="@+id/movie_music_singer_03_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="아이유(IU) | 2021.01.27"
+                        android:textColor="@color/gray_color"
+                        android:textSize="15sp"
+                        app:layout_constraintStart_toStartOf="@id/movie_music_title_03_tv"
+                        app:layout_constraintTop_toBottomOf="@id/movie_music_title_03_tv"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/movie_music_04_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="5dp">
+
+                    <ImageView
+                        android:id="@+id/movie_music_video_04_tv"
+                        android:src="@drawable/img_video_exp5"
+                        android:layout_width="match_parent"
+                        android:layout_height="210dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/movie_music_title_04_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:text="[티저] Flu"
+                        app:layout_constraintStart_toStartOf="@id/movie_music_video_04_tv"
+                        app:layout_constraintTop_toBottomOf="@id/movie_music_video_04_tv"/>
+
+                    <TextView
+                        android:id="@+id/movie_music_singer_04_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="아이유(IU) | 2021.03.12"
+                        android:textColor="@color/gray_color"
+                        android:textSize="15sp"
+                        app:layout_constraintStart_toStartOf="@id/movie_music_title_04_tv"
+                        app:layout_constraintTop_toBottomOf="@id/movie_music_title_04_tv"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
