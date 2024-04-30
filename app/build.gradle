@@ -46,4 +46,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     // 오픈소스 라이브러리인 CircleIndicator 활용해서 슬라이드 만들어보기
     implementation 'me.relex:circleindicator:2.1.6'
+    // 안드로이드 12에서 스플래시 구현하기
+    implementation 'androidx.core:core-splashscreen:1.0.0-beta01'
 }
