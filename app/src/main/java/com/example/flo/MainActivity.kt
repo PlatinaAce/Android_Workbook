@@ -14,6 +14,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+//      플로 스플래시 화면 구현하기
+        setTheme(R.style.Theme_FLO)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

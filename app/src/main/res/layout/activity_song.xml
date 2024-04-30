@@ -99,12 +99,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/song_singer_more_iv" />
 
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="50dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/img_video_exp3"
+        app:layout_constraintRight_toRightOf="@id/song_album_iv"
+        app:layout_constraintBottom_toBottomOf="@id/song_album_iv"/>
+
     <TextView
         android:id="@+id/song_music_lyrics_01_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="나라는 꽃가루에"
+        android:text="내리는 꽃가루에"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="@+id/song_album_iv"
         app:layout_constraintStart_toStartOf="@+id/song_album_iv"
@@ -158,8 +166,8 @@
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
         android:progress="0"
-        android:progressBackgroundTint="@color/gray_color"
-        android:progressTint="@color/select_color"
+        android:progressBackgroundTint="@color/song_player_bg"
+        android:progressTint="@color/song_player"
         android:thumb="@color/transparent"
         android:max="100000"
         app:layout_constraintStart_toStartOf="parent"
@@ -205,7 +213,6 @@
         android:textColor="@color/gray_color"
         app:layout_constraintEnd_toEndOf="@+id/song_progress_sb"
         app:layout_constraintTop_toBottomOf="@+id/song_progress_sb" />
-
 
     <LinearLayout
         android:id="@+id/song_player_layout"
