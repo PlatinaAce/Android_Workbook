@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-<!--    플로 스플래시 화면 구현-->
-    <item android:drawable="@color/white"/>
-    <item>
-        <bitmap android:src="@drawable/ic_flo_logo" android:gravity="center"/>
-    </item>
+
+    <!--    플로 스플래시 화면 구현-->
+    <item
+        android:width="107dp"
+        android:height="50dp"
+        android:drawable="@drawable/ic_flo_logo"
+        android:gravity="center"/>
 
 </layer-list>

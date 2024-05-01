@@ -21,9 +21,9 @@
 
     </style>
 
-<!--    플로 스플래시 화면 구현-->
+    <!--    플로 스플래시 화면 구현-->
     <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-<!--        API 31 버전에서 Splash-->
+        <!--        API 31 버전에서 Splash-->
         <item name="windowSplashScreenBackground" tools:targetApi = "s">@color/white</item>
         <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@drawable/splash</item>
         <item name="android:windowSplashScreenAnimationDuration" tools:targetApi="s">1000</item>
