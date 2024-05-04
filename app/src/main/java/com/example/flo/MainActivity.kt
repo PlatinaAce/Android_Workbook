@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
-    private var song:Song = Song()
+    private var song: Song = Song()
     private var gson: Gson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
