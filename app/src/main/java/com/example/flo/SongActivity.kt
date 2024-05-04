@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.flo.databinding.ActivitySongBinding
+import com.google.gson.Gson
 import java.util.Timer
 
 class SongActivity : AppCompatActivity(){
@@ -15,7 +16,7 @@ class SongActivity : AppCompatActivity(){
     lateinit var song: Song
     lateinit var timer: Timer
     private var mediaPlayer: MediaPlayer? = null
-
+    private var gson: Gson = Gson()
 
 
     override fun onCreate(savedInstanceState: Bundle?){
@@ -59,10 +60,29 @@ class SongActivity : AppCompatActivity(){
 
     }
 
+    // 사용자가 포커스를 잃었을 때 음악이 중지
+    override fun onPause() {
+        super.onPause()
+        setPlayerStatus(false)
+        song.second = ((binding.songProgressSb.progress * song.playTime) / 100) / 1000
+        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
+        // 에디터
+        val editor = sharedPreferences.edit()
+        val songJson = gson.toJson(song)
+        editor.putString("songData", songJson)
+
+        editor.apply()
+
+    }
+
     // 재생 스레드 만들기
     override fun onDestroy() {
         super.onDestroy()
         timer.interrupt()
+        // 미디어플레이어가 갖고 있던 리로스 해제
+        mediaPlayer?.release()
+        // 미디어 플레이어 해제
+        mediaPlayer = null
     }
 
     private fun initSong(){
