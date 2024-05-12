@@ -18,7 +18,7 @@ class LockerAlbumRVAdapter (private val albumList: ArrayList<Album>): RecyclerVi
     }
 
     override fun onBindViewHolder(holder: LockerAlbumRVAdapter.ViewHolder, position: Int) {
-        holder.bind(albumList[position])
+        holder.bind(albumList[position], position)
         // Week 6 Lecture 40
         holder.itemView.setOnClickListener{ mItemClickListener.onItemClick(albumList[position]) }
 
@@ -30,13 +30,13 @@ class LockerAlbumRVAdapter (private val albumList: ArrayList<Album>): RecyclerVi
 
     inner class ViewHolder(val binding: ItemLockerAlbumBinding): RecyclerView.ViewHolder(binding.root){
 
-        fun bind(album: Album){
+        fun bind(album: Album, position: Int){
             binding.itemLockerAlbumTitleTv.text = album.title
             binding.itemLockerAlbumSingerTv.text = album.singer
             binding.itemLockerAlbumCoverImgIv.setImageResource(album.coverImg!!)
 
             // 재생 버튼 클릭 시 이미지 정지 버튼으로 바뀌는 기능
-            if(changeBtnStatus.get(position, false)){
+            if(changeBtnStatus[position]){
                 binding.itemLockerAlbumPlayImgIv.visibility = View.GONE
                 binding.itemLockerAlbumPauseImgIv.visibility = View.VISIBLE
             }
@@ -77,7 +77,15 @@ class LockerAlbumRVAdapter (private val albumList: ArrayList<Album>): RecyclerVi
     // Album 제목을 클릭하면 앨범이 사라지는 기능
     fun removeItem(position: Int){
         albumList.removeAt(position)
-        changeBtnStatus.put(position,false)
+        changeBtnStatus.delete(position) // 해당 위치의 상태 삭제
+        // 삭제된 이후의 모든 아이템의 상태를 업데이트
+        for (i in position until albumList.size) {
+            if (changeBtnStatus[i + 1]) {
+                changeBtnStatus.put(i, true)
+            } else {
+                changeBtnStatus.put(i, false)
+            }
+        }
         notifyDataSetChanged()
     }
 }

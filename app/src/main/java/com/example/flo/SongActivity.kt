@@ -104,8 +104,10 @@ class SongActivity : AppCompatActivity(){
                 intent.getIntExtra("second",0),
                 intent.getIntExtra("playTime",0),
                 intent.getBooleanExtra("isPlaying",false),
-                intent.getStringExtra("music")!!
+                intent.getStringExtra("music")!!,
+                intent.getIntExtra("albumImg", 0)
             )
+            Log.d("Song", "initSong - Song Data: $song")
         }
         startTimer()
     }
@@ -116,6 +118,7 @@ class SongActivity : AppCompatActivity(){
         binding.songStartTimeTv.text = String.format("%02d:%02d",song.second / 60, song.second % 60)
         binding.songEndTimeTv.text = String.format("%02d:%02d",song.playTime / 60, song.playTime % 60)
         binding.songProgressSb.progress = (song.second * 100000 / song.playTime)
+        binding.songAlbumIv.setImageResource(song.albumImg!!)
 
         val music = resources.getIdentifier(song.music,"raw",this.packageName)
         mediaPlayer = MediaPlayer.create(this, music)

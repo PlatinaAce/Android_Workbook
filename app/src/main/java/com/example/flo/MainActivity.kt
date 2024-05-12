@@ -36,6 +36,8 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("playTime", song.playTime)
             intent.putExtra("isPlaying", song.isPlaying)
             intent.putExtra("music", song.music)
+            intent.putExtra("albumImg", song.albumImg)
+
             startActivity(intent)
         }
 
@@ -102,9 +104,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun updateMainPlayerCl(album: Album){
-        binding.mainMiniplayerTitleTv.text = album.title
-        binding.mainMiniplayerSingerTv.text = album.singer
-        binding.mainMiniplayerProgressSb.progress = 0
+        val songData = album.songs?.get(0)
+
+        if (songData?.title != null) {
+            binding.mainMiniplayerTitleTv.text=songData.title
+            binding.mainMiniplayerSingerTv.text = songData.singer
+            binding.mainMiniplayerProgressSb.progress = 0
+            song = songData
+        } else {
+            binding.mainMiniplayerTitleTv.text = album.title
+            binding.mainMiniplayerSingerTv.text = album.singer
+            binding.mainMiniplayerProgressSb.progress = 0
+        }
     }
 
 }
