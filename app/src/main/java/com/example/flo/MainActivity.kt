@@ -7,10 +7,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.flo.databinding.ActivityMainBinding
+import com.google.gson.Gson
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+
+    private var song: Song = Song()
+    private var gson: Gson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,8 +27,6 @@ class MainActivity : AppCompatActivity() {
 
         initBottomNavigation()
 
-        val song = Song(binding.mainMiniplayerTitleTv.text.toString(), binding.mainMiniplayerSingerTv.text.toString(), 0, 60, false)
-
         binding.mainPlayerCl.setOnClickListener {
             //startActivity(Intent(this, SongActivity::class.java))
             val intent = Intent(this,SongActivity::class.java)
@@ -33,6 +35,9 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("second", song.second)
             intent.putExtra("playTime", song.playTime)
             intent.putExtra("isPlaying", song.isPlaying)
+            intent.putExtra("music", song.music)
+            intent.putExtra("albumImg", song.albumImg)
+
             startActivity(intent)
         }
 
@@ -78,5 +83,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setMiniPlayer(song: Song){
+        binding.mainMiniplayerTitleTv.text = song.title
+        binding.mainMiniplayerSingerTv.text = song.singer
+        binding.mainMiniplayerProgressSb.progress = (song.second * 100000) / song.playTime
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
+        val songJson = sharedPreferences.getString("songData", null)
+
+        song = if(songJson == null){
+            Song("라일락", "아이유(IU)", 0, 60, false, "music_lilac")
+        }else{
+            gson.fromJson(songJson, Song::class.java)
+        }
+
+        setMiniPlayer(song)
+    }
+
+    fun updateMainPlayerCl(album: Album){
+        val songData = album.songs?.get(0)
+
+        if (songData?.title != null) {
+            binding.mainMiniplayerTitleTv.text=songData.title
+            binding.mainMiniplayerSingerTv.text = songData.singer
+            binding.mainMiniplayerProgressSb.progress = 0
+            song = songData
+        } else {
+            binding.mainMiniplayerTitleTv.text = album.title
+            binding.mainMiniplayerSingerTv.text = album.singer
+            binding.mainMiniplayerProgressSb.progress = 0
+        }
+    }
 
 }
