@@ -15,7 +15,6 @@ class AlbumFragment : Fragment() {
 
     lateinit var binding: FragmentAlbumBinding
     private var gson: Gson = Gson()
-
     private val information = arrayListOf("수록곡", "상세정보", "영상")
 
     override fun onCreateView(

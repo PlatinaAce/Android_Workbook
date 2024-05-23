@@ -6,8 +6,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.flo.databinding.ItemAlbumBinding
 
 class AlbumRVAdapter(private val albumList: ArrayList<Album>): RecyclerView.Adapter<AlbumRVAdapter.ViewHolder>() {
+
+    interface MyItemClickListener{
+        fun onItemClick(album: Album)
+        fun onRemoveAlbum(position:Int)
+        fun onPlayAlbum(album: Album)
+    }
+
+    private lateinit var mItemClickListener: MyItemClickListener
+    fun setMyItemClickListener(itemClickListener: MyItemClickListener){
+        mItemClickListener = itemClickListener
+    }
+
     fun addItem(album: Album){
         albumList.add(album)
+        notifyDataSetChanged()
+    }
+
+    fun removeItem(position: Int){
+        albumList.removeAt(position)
         notifyDataSetChanged()
     }
 
@@ -36,15 +53,5 @@ class AlbumRVAdapter(private val albumList: ArrayList<Album>): RecyclerView.Adap
             binding.itemAlbumSingerTv.text = album.singer
             binding.itemAlbumCoverImgIv.setImageResource(album.coverImg!!)
         }
-    }
-
-    interface MyItemClickListener{
-        fun onItemClick(album: Album)
-        fun onPlayAlbum(album: Album)
-    }
-
-    private lateinit var mItemClickListener: MyItemClickListener
-    fun setMyItemClickListener(itemClickListener: MyItemClickListener){
-        mItemClickListener = itemClickListener
     }
 }
