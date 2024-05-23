@@ -1,79 +1,77 @@
 package com.example.flo
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.flo.databinding.FragmentDetailBinding
 import com.example.flo.databinding.FragmentLockerSavedSongBinding
+import com.example.flo.databinding.FragmentSongBinding
 import com.google.gson.Gson
 
-class LockerSavedSongFragment: Fragment(){
-
-    private var albumDatas = ArrayList<Album>()
+class LockerSavedSongFragment : Fragment(), BottomSheetFragment.BottomSheetListener{
     lateinit var binding: FragmentLockerSavedSongBinding
+    lateinit var songDB: SongDatabase
+    var isSelect: Boolean = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentLockerSavedSongBinding.inflate(inflater,container,false)
-
-        // 데이터 리스트 생성 더미 데이터
-        albumDatas.apply {
-            add(Album("Butter", "방탄소년단 (BTS)", R.drawable.img_album_exp))
-            add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
-            add(Album("Next Level", "에스파 (AESPA)", R.drawable.img_album_exp3))
-            add(Album("Boy with Luv", "방탄소년단 (BTS)", R.drawable.img_album_exp4))
-            add(Album("BBoom BBoom", "모모랜드 (MOMOLAND)", R.drawable.img_album_exp5))
-            add(Album("Weekend", "태연 (Tae Yeon)", R.drawable.img_album_exp6))
-            add(Album("Butter", "방탄소년단 (BTS)", R.drawable.img_album_exp))
-            add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
-            add(Album("Next Level", "에스파 (AESPA)", R.drawable.img_album_exp3))
-            add(Album("Boy with Luv", "방탄소년단 (BTS)", R.drawable.img_album_exp4))
-            add(Album("BBoom BBoom", "모모랜드 (MOMOLAND)", R.drawable.img_album_exp5))
-            add(Album("Weekend", "태연 (Tae Yeon)", R.drawable.img_album_exp6))
-            add(Album("Butter", "방탄소년단 (BTS)", R.drawable.img_album_exp))
-            add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
-            add(Album("Next Level", "에스파 (AESPA)", R.drawable.img_album_exp3))
-            add(Album("Boy with Luv", "방탄소년단 (BTS)", R.drawable.img_album_exp4))
-            add(Album("BBoom BBoom", "모모랜드 (MOMOLAND)", R.drawable.img_album_exp5))
-            add(Album("Weekend", "태연 (Tae Yeon)", R.drawable.img_album_exp6))
-        }
-
-        val lockerAlbumRVAdapter = LockerAlbumRVAdapter(albumDatas)
-        binding.lockerMusicAlbumRv.adapter = lockerAlbumRVAdapter
-        binding.lockerMusicAlbumRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-
-        lockerAlbumRVAdapter.setMyItemClickListener(object: LockerAlbumRVAdapter.MyItemClickListener{
-            override fun onItemClick(album: Album){
-                changeAlbumFragment(album)
-            }
-
-//             Album 제목을 클릭하면 앨범이 사라지는 기능
-            override fun onRemoveAlbum(position: Int) {
-                lockerAlbumRVAdapter.removeItem(position)
-            }
-        })
+        binding = FragmentLockerSavedSongBinding.inflate(inflater, container, false)
+        songDB = SongDatabase.getInstance(requireContext())!!
 
         return binding.root
     }
-
-    private fun changeAlbumFragment(album: Album) {
-        (context as MainActivity).supportFragmentManager.beginTransaction()
-            .replace(R.id.main_frm, AlbumFragment().apply {
-                arguments = Bundle().apply {
-                    val gson = Gson()
-                    val albumJson = gson.toJson(album)
-                    putString("album", albumJson)
-                }
-            })
-            .commitAllowingStateLoss()
+    override fun onStart() {
+        super.onStart()
+        initRecyclerView()
     }
 
+    private fun initRecyclerView() {
+        binding.lockerSavedSongRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+
+        val songRVAdpater = LockerSavedSongRVAdapter()
+
+        songRVAdpater.setMyItemClickListener(object : LockerSavedSongRVAdapter.MyItemClickListener{
+            override fun onRemoveSong(songId: Int){
+                songDB.songDao().updateIsLikeById(false, songId)
+            }
+        })
+
+        binding.lockerSavedSongRv.adapter = songRVAdpater
+
+        songRVAdpater.addSongs(songDB.songDao().getLikedSongs(true) as ArrayList<Song>)
+
+        binding.lockerSelectAllTv.setOnClickListener {
+            setSelectAllLayout(isSelect)
+        }
+    }
+
+    private fun setSelectAllLayout(isSelect: Boolean) {
+        if (!isSelect) {  // off 상태에서 클릭
+            val bottomSheetFragment = BottomSheetFragment()
+            bottomSheetFragment.setBottomSheetListener(this)  // 리스너 설정
+            bottomSheetFragment.show(requireFragmentManager(), "BottomSheetDialog")
+            binding.lockerSelectAllTv.text = "선택해제"
+            binding.lockerSelectAllTv.setTextColor(Color.parseColor("#0019F4"))
+            binding.lockerSelectAllImgIv.setImageResource(R.drawable.btn_playlist_select_on)
+            this.isSelect = true
+        } else {
+            binding.lockerSelectAllTv.text = "전체선택"
+            binding.lockerSelectAllTv.setTextColor(Color.parseColor("000000"))
+            binding.lockerSelectAllImgIv.setImageResource(R.drawable.btn_playlist_select_off)
+            this.isSelect = false
+        }
+    }
+    override fun onButtonClicked() {
+        binding.lockerSelectAllTv.text = "전체선택"
+        binding.lockerSelectAllTv.setTextColor(Color.parseColor("#000000"))
+        binding.lockerSelectAllImgIv.setImageResource(R.drawable.btn_playlist_select_off)
+        this.isSelect = false
+    }
 }

@@ -8,15 +8,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.flo.databinding.ActivitySongBinding
 import com.google.gson.Gson
-import java.util.Timer
 
 class SongActivity : AppCompatActivity(){
 
     lateinit var binding: ActivitySongBinding
-    lateinit var song: Song
     lateinit var timer: Timer
     private var mediaPlayer: MediaPlayer? = null
     private var gson: Gson = Gson()
+
+    val songs = arrayListOf<Song>()
+    lateinit var songDB: SongDatabase
+    var song : Song = Song()
+    var nowPos = 0
 
     private var resumePosition = 0
 
@@ -25,9 +28,72 @@ class SongActivity : AppCompatActivity(){
         binding = ActivitySongBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        initPlayList()
         initSong()
-        setPlayer(song)
+        initClickListener()
+    }
 
+    // 사용자가 포커스를 잃었을 때 음악이 중지
+    override fun onPause() {
+        super.onPause()
+        songs[nowPos].second = (songs[nowPos].playTime * binding.songProgressSb.progress) / 100000
+        songs[nowPos].isPlaying = false
+        setPlayerStatus(false)
+
+        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("songId", songs[nowPos].id)
+        editor.putInt("second", songs[nowPos].second)
+        editor.apply()
+    }
+
+    private fun saveSongData() {
+        songs[nowPos].second = (binding.songProgressSb.progress * songs[nowPos].playTime / 100) / 1000    // 초 단위로 저장
+
+        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()   // spf를 사용하기 위한 에디터
+
+        editor.putInt("songId", songs[nowPos].id)
+
+        editor.apply()
+    }
+
+    // 재생 스레드 만들기
+    override fun onDestroy() {
+        super.onDestroy()
+        timer.interrupt()
+        // 미디어플레이어가 갖고 있던 리소스 해제
+        mediaPlayer?.release()
+        // 미디어 플레이어 해제
+        mediaPlayer = null
+    }
+
+    private fun initSong(){
+        val spf = getSharedPreferences("song", MODE_PRIVATE)
+        val songId = spf.getInt("songId",0)
+
+        nowPos = getPlayingSongPosition(songId)
+        Log.d("now Song ID", songs[nowPos].id.toString())
+
+        startTimer()
+        setPlayer(songs[nowPos])
+    }
+
+    private fun getPlayingSongPosition(songId: Int): Int{
+        for (i in 0 until songs.size){
+            if (songs[i].id == songId){
+                return i
+            }
+        }
+        return 0
+    }
+
+    private fun initPlayList(){
+        songDB = SongDatabase.getInstance(this)!!
+        songs.addAll(songDB.songDao().getSongs())
+    }
+
+    private fun initClickListener(){
         // 버튼을 누르면 MainActivity로 돌아가기
         binding.songDownIb.setOnClickListener{
             finish()
@@ -59,77 +125,86 @@ class SongActivity : AppCompatActivity(){
             setRandomStatus(true)
         }
 
+        binding.songNextIv.setOnClickListener {
+            moveSong(+1)
+        }
+
+        binding.songPreviousIv.setOnClickListener {
+            moveSong(-1)
+        }
+
+        binding.songUnlikeIv.setOnClickListener {
+            setLike(songs[nowPos].isLike)
+            CustomSnackbar.make(binding.root, "좋아요 한 곡에 담겼습니다").show()
+        }
     }
 
-    // 사용자가 포커스를 잃었을 때 음악이 중지
-    override fun onPause() {
-        super.onPause()
-        setPlayerStatus(false)
-        saveSongData() // 넘겨줄 song 객체 정보 저장
+    private fun setLike(isLike: Boolean){
+        songs[nowPos].isLike = !isLike
+        songDB.songDao().updateIsLikeById(!isLike, songs[nowPos].id)
+
+        if (!isLike){
+            binding.songLikeIv.setImageResource(R.drawable.ic_my_like_on)
+        } else{
+            binding.songLikeIv.setImageResource(R.drawable.ic_my_like_off)
+        }
     }
 
-    private fun saveSongData() {
-        song.second = (binding.songProgressSb.progress * song.playTime / 100) / 1000    // 초 단위로 저장
+    private fun moveSong(direct: Int){
+        if (nowPos + direct < 0){
+            CustomSnackbar.make(binding.root, "처음 곡입니다.").show()
+            return
+        }
+        if (nowPos + direct >= songs.size){
+            CustomSnackbar.make(binding.root, "마지막 곡입니다").show()
+            return
+        }
 
-        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
-        val editor = sharedPreferences.edit()   // spf를 사용하기 위한 에디터
+        nowPos += direct
 
-        val songJson = gson.toJson(song)
-        editor.putString("songData", songJson)
-
-        editor.apply()
-    }
-
-    // 재생 스레드 만들기
-    override fun onDestroy() {
-        super.onDestroy()
         timer.interrupt()
+        resetMusic()
+        startTimer()
+
         // 미디어플레이어가 갖고 있던 리소스 해제
         mediaPlayer?.release()
         // 미디어 플레이어 해제
         mediaPlayer = null
-    }
 
-    private fun resetMusic(){
-        mediaPlayer?.reset()
-        val music = resources.getIdentifier(song.music, "raw", this.packageName)
-        mediaPlayer = MediaPlayer.create(this, music)
-    }
-
-    private fun initSong(){
-        if(intent.hasExtra("title") && intent.hasExtra("singer")){
-            song = Song(
-                intent.getStringExtra("title")!!,
-                intent.getStringExtra("singer")!!,
-                intent.getIntExtra("second",0),
-                intent.getIntExtra("playTime",0),
-                intent.getBooleanExtra("isPlaying",false),
-                intent.getStringExtra("music")!!,
-                intent.getIntExtra("albumImg", 0)
-            )
-            Log.d("Song", "initSong - Song Data: $song")
-        }
-        startTimer()
+        setPlayer(songs[nowPos])
     }
 
     private fun setPlayer(song: Song){
-        binding.songMusicTitleTv.text = intent.getStringExtra("title")!!
-        binding.songSingerNameTv.text = intent.getStringExtra("singer")!!
-        binding.songStartTimeTv.text = String.format("%02d:%02d",song.second / 60, song.second % 60)
-        binding.songEndTimeTv.text = String.format("%02d:%02d",song.playTime / 60, song.playTime % 60)
+        binding.songMusicTitleTv.text = song.title
+        binding.songSingerNameTv.text = song.singer
+        binding.songStartTimeTv.text = String.format("%02d:%02d", song.second / 60, song.second % 60)
+        binding.songEndTimeTv.text = String.format("%02d:%02d", song.playTime / 60, song.playTime % 60)
         binding.songProgressSb.progress = (song.second * 100000 / song.playTime)
-        binding.songAlbumIv.setImageResource(song.albumImg!!)
+        binding.songAlbumIv.setImageResource(song.coverImg!!)
 
-        val music = resources.getIdentifier(song.music,"raw",this.packageName)
-        mediaPlayer = MediaPlayer.create(this, music)
+        val musicResourceId = resources.getIdentifier(song.music, "raw", this.packageName)
+        mediaPlayer = MediaPlayer.create(this, musicResourceId)
+
+        if (mediaPlayer == null) {
+            resetMusic()
+        } else if (song.second != 0) {
+            mediaPlayer?.seekTo(song.second * 1000 + 1200)
+        }
+
+        if (song.isLike) {
+            binding.songLikeIv.setImageResource(R.drawable.ic_my_like_on)
+        } else {
+            binding.songUnlikeIv.setImageResource(R.drawable.ic_my_like_off)
+        }
+
+        startTimer()
+
         setPlayerStatus(song.isPlaying)
-        // 음악 재생 시점 설정 (이어서 재생)
-        mediaPlayer?.seekTo(song.second * 1000)
     }
 
     // 버튼을 누르면 일시정지 버튼으로 바꾸기
     private fun setPlayerStatus(isPlaying: Boolean){
-        song.isPlaying = isPlaying
+        songs[nowPos].isPlaying = isPlaying
         timer.isPlaying = isPlaying
 
         if (isPlaying){
@@ -173,14 +248,14 @@ class SongActivity : AppCompatActivity(){
     // 재생 스레드 만들기
 
     private fun startTimer(){
-        timer = Timer(song.playTime, song.isPlaying)
+        timer = Timer(songs[nowPos].playTime, songs[nowPos].isPlaying)
         timer.start()
     }
 
     inner class Timer(private val playTime: Int,var isPlaying: Boolean = true):Thread() {
 
-        private var second: Int = song.second
-        private var mills: Float = (song.second * 1000).toFloat()
+        private var second: Int = songs[nowPos].second
+        private var mills: Float = (songs[nowPos].second * 1000).toFloat()
 
         override fun run() {
             super.run()
@@ -222,5 +297,11 @@ class SongActivity : AppCompatActivity(){
                 Log.d("Song", "쓰레드가 죽었습니다. ${e.message}")
             }
         }
+    }
+
+    private fun resetMusic() {
+        mediaPlayer?.reset()
+        val music = resources.getIdentifier(songs[nowPos].music, "raw", this.packageName)
+        mediaPlayer = MediaPlayer.create(this, music)
     }
 }

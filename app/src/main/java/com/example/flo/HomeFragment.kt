@@ -27,11 +27,12 @@ class HomeFragment : Fragment(), CommunicationInterface {
 //  일정 시간 후 다음 화면으로 넘어가는 자동 슬라이드 구현해보기
     private val timer = Timer()
     private val handler = Handler(Looper.getMainLooper())
+    private lateinit var songDB: SongDatabase
 
     override fun sendData(album: Album) {
         if (activity is MainActivity){
             val activity = activity as MainActivity
-            activity.updateMainPlayerCl(album)
+            activity.updateMainPlayerCl(album.id)
         }
     }
     override fun onCreateView(
@@ -40,42 +41,20 @@ class HomeFragment : Fragment(), CommunicationInterface {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-        // 데이터 리스트 생성 더미 데이터
-        albumDatas.apply {
-            add(Album("Butter", "방탄소년단 (BTS)", R.drawable.img_album_exp, arrayListOf(
-                Song("Butter", "방탄소년단 (BTS)", 0, 200, false, "music_butter", R.drawable.img_album_exp),
-                Song("Butter (Hotter Remix)", "방탄소년단 (BTS)", 0, 200, false, "music_butter", R.drawable.img_album_exp),
-                Song("Butter (Sweeter Remix)", "방탄소년단 (BTS)", 0, 200, false, "music_butter", R.drawable.img_album_exp),
-                Song("Butter (Cooler Remix)", "방탄소년단 (BTS)", 0, 200, false, "music_butter", R.drawable.img_album_exp)
-            )))
-            add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2, arrayListOf(
-                Song("Lilac", "아이유 (IU)", 0, 200, false, "music_lilac", R.drawable.img_album_exp2),
-                Song("Flu", "아이유 (IU)", 0, 200, false, "music_lilac", R.drawable.img_album_exp2),
-                Song("Coin", "아이유 (IU)", 0, 200, false, "music_lilac", R.drawable.img_album_exp2),
-                Song("봄 안녕 봄", "아이유 (IU)", 0, 200, false, "music_lilac", R.drawable.img_album_exp2)
-            )))
-            add(Album("Next Level", "에스파 (AESPA)", R.drawable.img_album_exp3, arrayListOf(
-                Song("Next Level", "에스파 (AESPA)", 0, 200, false, "music_nextlevel", R.drawable.img_album_exp3)
-            )))
-            add(Album("Boy with Luv", "방탄소년단 (BTS)", R.drawable.img_album_exp4, arrayListOf(
-                Song("Boy With Luv", "방탄소년단 (BTS)", 0, 200, false, "music_boywithluv", R.drawable.img_album_exp4)
-            )))
-            add(Album("BBoom BBoom", "모모랜드 (MOMOLAND)", R.drawable.img_album_exp5, arrayListOf(
-                Song("BBoom BBoom", "모모랜드 (MOMOLAND)", 0, 200, false, "music_bboombboom", R.drawable.img_album_exp5)
-            )))
-            add(Album("Weekend", "태연 (Tae Yeon)", R.drawable.img_album_exp6, arrayListOf(
-                Song("Weekend", "태연 (Tae Yeon)", 0, 200, false, "music_weekend", R.drawable.img_album_exp6)
-            )))
-        }
+        songDB = SongDatabase.getInstance(requireContext())!!
+        albumDatas.addAll(songDB.albumDao().getAlbums())
 
         val albumRVAdapter = AlbumRVAdapter(albumDatas)
         binding.homeTodayMusicAlbumRv.adapter = albumRVAdapter
-        binding.homeTodayMusicAlbumRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.homeTodayMusicAlbumRv.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
 
         albumRVAdapter.setMyItemClickListener(object: AlbumRVAdapter.MyItemClickListener{
             override fun onItemClick(album: Album){
                 changeAlbumFragment(album)
+            }
+
+            override fun onRemoveAlbum(position: Int) {
+                albumRVAdapter.removeItem(position)
             }
 
             override fun onPlayAlbum(album: Album){

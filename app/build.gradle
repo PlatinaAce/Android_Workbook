@@ -1,12 +1,17 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
     compileSdk 31
 
     viewBinding {
+        enabled true
+    }
+
+    dataBinding{
         enabled true
     }
 
@@ -50,4 +55,8 @@ dependencies {
     implementation 'androidx.core:core-splashscreen:1.0.0-beta01'
     // gson 가져오기
     implementation 'com.google.code.gson:gson:2.8.7'
+    // RoomDB
+    implementation 'androidx.room:room-ktx:2.4.1'
+    implementation 'androidx.room:room-runtime:2.4.1'
+    kapt 'androidx.room:room-compiler:2.4.1'
 }
