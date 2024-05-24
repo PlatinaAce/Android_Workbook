@@ -3,10 +3,11 @@ package com.example.flo
 import android.content.Context
 import androidx.room.*
 
-@Database(entities = [Song::class,Album::class], version = 1)
+@Database(entities = [Song::class,Album::class, User::class, Like::class], version = 1)
 abstract class SongDatabase:RoomDatabase() {
     abstract fun songDao():SongDao
     abstract fun albumDao():AlbumDao
+    abstract fun UserDao():UserDao
 
     companion object{
         private var instance:SongDatabase?=null

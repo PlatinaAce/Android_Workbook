@@ -259,7 +259,7 @@ class MainActivity : AppCompatActivity() {
                 0,
                 230,
                 false,
-                "butter",
+                "music_butter",
                 R.drawable.img_album_exp,
                 false,
                 1
@@ -285,7 +285,7 @@ class MainActivity : AppCompatActivity() {
                 0,
                 230,
                 false,
-                "next_level",
+                "music_nextlevel",
                 R.drawable.img_album_exp3,
                 false,
                 3
@@ -298,7 +298,7 @@ class MainActivity : AppCompatActivity() {
                 0,
                 230,
                 false,
-                "boy_with_luv",
+                "music_boywithluv",
                 R.drawable.img_album_exp4,
                 false,
                 4
@@ -311,7 +311,7 @@ class MainActivity : AppCompatActivity() {
                 0,
                 230,
                 false,
-                "bbom_bboom",
+                "music_bboombboom",
                 R.drawable.img_album_exp5,
                 false,
                 5
@@ -324,7 +324,7 @@ class MainActivity : AppCompatActivity() {
                 0,
                 230,
                 false,
-                "weekend",
+                "music_weekend",
                 R.drawable.img_album_exp6,
                 false,
                 6
@@ -359,7 +359,7 @@ class MainActivity : AppCompatActivity() {
         songDB.albumDao().insert(
             Album(
                 3,
-                "iScreaM Vol.10 : Next Level Remixes",
+                "Next Level",
                 "에스파 (aespa)",
                 R.drawable.img_album_exp3,
             )
