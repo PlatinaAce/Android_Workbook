@@ -99,14 +99,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/song_singer_more_iv" />
 
-    <ImageView
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/img_video_exp3"
-        app:layout_constraintRight_toRightOf="@id/song_album_iv"
-        app:layout_constraintBottom_toBottomOf="@id/song_album_iv"/>
-
     <TextView
         android:id="@+id/song_music_lyrics_01_iv"
         android:layout_width="wrap_content"

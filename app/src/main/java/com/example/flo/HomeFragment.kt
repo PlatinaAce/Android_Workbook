@@ -41,10 +41,15 @@ class HomeFragment : Fragment(), CommunicationInterface {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        // 데이터 리스트 생성 더미 데이터
         songDB = SongDatabase.getInstance(requireContext())!!
         albumDatas.addAll(songDB.albumDao().getAlbums())
 
+        // 더미데이터랑 Adapter 연결
         val albumRVAdapter = AlbumRVAdapter(albumDatas)
+
+        // 리사이클러뷰에 어댑터를 연결
         binding.homeTodayMusicAlbumRv.adapter = albumRVAdapter
         binding.homeTodayMusicAlbumRv.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
 

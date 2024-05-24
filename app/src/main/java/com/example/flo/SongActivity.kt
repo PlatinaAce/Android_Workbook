@@ -133,9 +133,14 @@ class SongActivity : AppCompatActivity(){
             moveSong(-1)
         }
 
-        binding.songUnlikeIv.setOnClickListener {
+        binding.songLikeIv.setOnClickListener {
             setLike(songs[nowPos].isLike)
-            CustomSnackbar.make(binding.root, "좋아요 한 곡에 담겼습니다").show()
+            if (songs[nowPos].isLike == true){
+                CustomSnackbar.make(binding.root, "좋아요 한 곡에 담겼습니다.").show()
+            }
+            else{
+                CustomSnackbar.make(binding.root, "좋아요 한 곡이 취소되었습니다.").show()
+            }
         }
     }
 
@@ -194,7 +199,7 @@ class SongActivity : AppCompatActivity(){
         if (song.isLike) {
             binding.songLikeIv.setImageResource(R.drawable.ic_my_like_on)
         } else {
-            binding.songUnlikeIv.setImageResource(R.drawable.ic_my_like_off)
+            binding.songLikeIv.setImageResource(R.drawable.ic_my_like_off)
         }
 
         startTimer()
